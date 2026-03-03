@@ -1,7 +1,6 @@
 import random
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request
-from task import Task
 from flask_login import login_required, current_user
 from models import db, Task, User, Visit, Waitlist
 # import datetime
@@ -37,16 +36,24 @@ def index():
 @main_blueprint.route('/invitation', methods=['GET', 'POST'])
 def invitation():
 
+    log_visit(
+        page='invitation',
+        user_id=current_user.id if current_user.is_authenticated else None
+    )
+
     if request.method == 'POST':
         email = request.form['email']
-        # Here you would send a verification email and add to waitlist
         print(f"Sending invitation to {email}")
+
     return render_template('invitation.html')
 
 
 @main_blueprint.route('/todo', methods=['GET', 'POST'])
 @login_required
 def todo():
+
+    log_visit(page='todo', user_id=current_user.id)
+
     return render_template('todo.html')
 
 
