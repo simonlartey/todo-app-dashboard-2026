@@ -91,6 +91,20 @@ def dashboard():
         Waitlist.timestamp >= week_ago
     ).all()
 
+    # ===== User Activation Rate =====
+
+    total_users = User.query.count()
+
+    activated_users = db.session.query(User)\
+        .join(Task)\
+        .distinct()\
+        .count()
+
+    if total_users > 0:
+        activation_rate = round((activated_users / total_users) * 100, 1)
+    else:
+        activation_rate = 0
+
     recent_visits = Visit.query.order_by(
         Visit.timestamp.desc()
     ).limit(15).all()
@@ -190,6 +204,8 @@ def dashboard():
         date=datetime.datetime.now().strftime("%B %d, %Y"),
         total_users=total_users,
         new_users=new_users,
+        activation_rate=activation_rate,
+        activated_users=activated_users,
         visits_today=visits_today,
         total_visits=total_visits,
         productivity_change=productivity_change,
