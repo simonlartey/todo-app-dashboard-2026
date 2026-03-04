@@ -73,27 +73,54 @@ def todo():
     return render_template('todo.html')
 
 
-@main_blueprint.route('/dashboard', methods=['GET', 'POST'])
-# @login_required
+@main_blueprint.route('/dashboard', methods=['GET'])
 def dashboard():
-    visits = Visit.query.all()
 
+    today = datetime.datetime.utcnow().date()
+    week_ago = today - datetime.timedelta(days=6)
+
+    # ===== Basic Metrics =====
+    total_users = User.query.count()
+
+    new_users = User.query.filter(
+        User.created_at >= week_ago
+    ).count()
+
+    visits_today = Visit.query.filter(
+        db.func.date(Visit.timestamp) == today
+    ).count()
+
+    waitlist_this_week = Waitlist.query.filter(
+        Waitlist.timestamp >= week_ago
+    ).all()
+
+    recent_visits = Visit.query.order_by(
+        Visit.timestamp.desc()
+    ).limit(15).all()
+
+    # ===== charts  =====
     chart_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    week_notes = [0] * 7
+    two_week_notes = [0] * 7
 
-    week_notes = [random.randint(0, 15) for _ in range(7)]
-    two_week_notes = [random.randint(0, 15) for _ in range(7)]
-
-    return render_template('admin.html',
-                           date=datetime.datetime.now().strftime("%B %d, %Y"),
-                           total_users=716,     # add real number
-                           new_users=5,         # add real number
-                           visits_today=120,    # add real number
-                           productivity_change=0.6,   # add real number
-                           visits=visits,           # add real value
-                           chart_week=chart_week,   # update list to show today as the last day in the chart
-                           week_notes=week_notes,   # add real values
-                           two_week_notes=two_week_notes  # add real values
-                           )
+    return render_template(
+        'admin.html',
+        date=datetime.datetime.now().strftime("%B %d, %Y"),
+        total_users=total_users,
+        new_users=new_users,
+        visits_today=visits_today,
+        productivity_change=0,
+        visits=recent_visits,
+        waitlist=waitlist_this_week,
+        chart_week=chart_week,
+        week_notes=week_notes,
+        two_week_notes=two_week_notes,
+        page_visits=[0]*8,
+        week_visits=[0]*7,
+        two_week_visits=[0]*7,
+        users=User.query.all(),
+        tasks=Task.query.all()
+    )
 
 
 
