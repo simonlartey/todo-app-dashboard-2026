@@ -272,23 +272,24 @@
       </div>
 
       <div class="row mt-4">
+
+        <!-- Activation Rate -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">
-                      Activation Rate
-                    </p>
-                    <h5 class="font-weight-bolder">
-                      {{ activation_rate }}%
-                    </h5>
-                    <p class="mb-0">
-                      users created a task
-                    </p>
-                  </div>
+                  <p class="text-sm mb-0 text-uppercase font-weight-bold">
+                    Activation Rate
+                  </p>
+                  <h5 class="font-weight-bolder">
+                    {{ activation_rate }}%
+                  </h5>
+                  <p class="mb-0">
+                    users created a task
+                  </p>
                 </div>
+
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
                     <i class="ni ni-check-bold text-lg opacity-10"></i>
@@ -298,6 +299,39 @@
             </div>
           </div>
         </div>
+
+        <!-- Active Users -->
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+
+                  <p class="text-sm mb-0 text-uppercase font-weight-bold">
+                    Active Users
+                  </p>
+
+                  <h5 class="font-weight-bolder">
+                    {{ active_users_today }}
+                  </h5>
+
+                  <p class="mb-0">
+                    today
+                  </p>
+
+                </div>
+
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                    <i class="ni ni-user-run text-lg opacity-10"></i>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
       
       <div class="row mt-4">

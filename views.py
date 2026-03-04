@@ -74,6 +74,16 @@ def dashboard():
     today = datetime.datetime.utcnow().date()
     week_ago = today - datetime.timedelta(days=6)
 
+    # ===== Active Users Today =====
+
+    active_users_today = db.session.query(Visit.user)\
+        .filter(
+            Visit.user != None,
+            db.func.date(Visit.timestamp) == today
+        )\
+        .distinct()\
+        .count()
+
     # ===== Basic Metrics =====
     total_users = User.query.count()
 
@@ -202,6 +212,7 @@ def dashboard():
     return render_template(
         'admin.html',
         date=datetime.datetime.now().strftime("%B %d, %Y"),
+        active_users_today=active_users_today,
         total_users=total_users,
         new_users=new_users,
         activation_rate=activation_rate,
