@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request
 from flask_login import login_required, current_user
 from models import db, Task, User, Visit, Waitlist
+from sqlalchemy.exc import IntegrityError
 # import datetime
 import datetime
 
@@ -43,7 +44,22 @@ def invitation():
 
     if request.method == 'POST':
         email = request.form['email']
-        print(f"Sending invitation to {email}")
+
+        try:
+            existing_signup = Waitlist.query.filter_by(email=email).first()
+
+            if not existing_signup:
+                new_signup = Waitlist(email=email)
+                db.session.add(new_signup)
+                db.session.commit()
+
+                log_visit(
+                    page='waitlist_signup',
+                    user_id=current_user.id if current_user.is_authenticated else None
+                )
+
+        except IntegrityError:
+            db.session.rollback()
 
     return render_template('invitation.html')
 
@@ -93,7 +109,6 @@ def api_get_tasks():
 @main_blueprint.route('/api/v1/tasks', methods=['POST'])
 @login_required
 def api_create_task():
-    print("API CREATE TASK ROUTE HIT")
     data = request.get_json()
     new_task = Task(title=data['title'], user_id=current_user.id)
     db.session.add(new_task)
@@ -107,7 +122,6 @@ def api_create_task():
 @main_blueprint.route('/api/v1/tasks/<int:task_id>', methods=['PATCH'])
 @login_required
 def api_toggle_task(task_id):
-    print("API TOGGLE TASK ROUTE HIT")
     task = Task.query.get(task_id)
 
     if task is None:
@@ -123,7 +137,6 @@ def api_toggle_task(task_id):
 @main_blueprint.route('/remove/<int:task_id>')
 @login_required
 def remove(task_id):
-    print("DELETE TASK ROUTE HIT")
     task = Task.query.get(task_id)
 
     if task is None:
