@@ -93,8 +93,6 @@ def dashboard():
 
     # ===== User Activation Rate =====
 
-    total_users = User.query.count()
-
     activated_users = db.session.query(User)\
         .join(Task)\
         .distinct()\
