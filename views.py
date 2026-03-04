@@ -93,10 +93,12 @@ def api_get_tasks():
 @main_blueprint.route('/api/v1/tasks', methods=['POST'])
 @login_required
 def api_create_task():
+    print("API CREATE TASK ROUTE HIT")
     data = request.get_json()
     new_task = Task(title=data['title'], user_id=current_user.id)
     db.session.add(new_task)
     db.session.commit()
+    log_visit(page='create_task', user_id=current_user.id)
     return {
         "task": new_task.to_dict()
     }, 201
@@ -105,6 +107,7 @@ def api_create_task():
 @main_blueprint.route('/api/v1/tasks/<int:task_id>', methods=['PATCH'])
 @login_required
 def api_toggle_task(task_id):
+    print("API TOGGLE TASK ROUTE HIT")
     task = Task.query.get(task_id)
 
     if task is None:
@@ -112,6 +115,7 @@ def api_toggle_task(task_id):
 
     task.toggle()
     db.session.commit()
+    log_visit(page='toggle_task', user_id=current_user.id)
 
     return {"task": task.to_dict()}, 200
 
@@ -119,6 +123,7 @@ def api_toggle_task(task_id):
 @main_blueprint.route('/remove/<int:task_id>')
 @login_required
 def remove(task_id):
+    print("DELETE TASK ROUTE HIT")
     task = Task.query.get(task_id)
 
     if task is None:
@@ -126,5 +131,6 @@ def remove(task_id):
 
     db.session.delete(task)
     db.session.commit()
+    log_visit(page='delete_task', user_id=current_user.id)
 
     return redirect(url_for('main.todo'))
