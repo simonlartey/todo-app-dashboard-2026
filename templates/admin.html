@@ -301,14 +301,14 @@
             <div class="card-header pb-0 pt-3 bg-transparent">
               <h6 class="text-capitalize">New Users</h6>
               <p class="text-sm mb-0">
-                {% if productivity_change == 0 %}
+                {% if user_change == 0 %}
                 <span class="text-success text-sm font-weight-bolder">same as</span> the week before
-              {% elif productivity_change > 0 %}
+              {% elif user_change > 0 %}
                 <i class="fa fa-arrow-up text-success"></i>
-                <span class="text-success text-sm font-weight-bolder">+{{productivity_change}}% more</span> than the week before
+                <span class="text-success text-sm font-weight-bolder">+{{user_change}}% more</span> than the week before
               {% else %}
                 <i class="fa fa-arrow-down text-danger"></i>
-                <span class="text-danger text-sm font-weight-bolder">{{productivity_change * -1}}% less</span> than the week before
+                <span class="text-danger text-sm font-weight-bolder">{{user_change * -1}}% less</span> than the week before
               {% endif %} 
               </p>
             </div>
@@ -694,7 +694,7 @@
         backgroundColor: "#2d89ce",
         borderWidth: 4,
         fill: false,
-        data: {{ week_notes }},
+        data: {{ week_users }},
         maxBarThickness: 6
       },{
         label: "last week",
@@ -705,7 +705,7 @@
         backgroundColor: "#2dcbce",
         borderWidth: 2,
         fill: false,
-        data: {{ two_week_notes }},
+        data: {{ two_week_users }},
         maxBarThickness: 6
       }],
     },

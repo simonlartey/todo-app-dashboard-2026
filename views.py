@@ -157,6 +157,37 @@ def dashboard():
     else:
         productivity_change = 0
 
+    # ===== Weekly New User Comparison =====
+
+    week_users = []
+    two_week_users = []
+
+    for i in range(6, -1, -1):
+        day_this_week = today - datetime.timedelta(days=i)
+        day_last_week = day_this_week - datetime.timedelta(days=7)
+
+        this_week_user_count = User.query.filter(
+            db.func.date(User.created_at) == day_this_week
+        ).count()
+
+        last_week_user_count = User.query.filter(
+            db.func.date(User.created_at) == day_last_week
+        ).count()
+
+        week_users.append(this_week_user_count)
+        two_week_users.append(last_week_user_count)
+
+    this_week_users_total = sum(week_users)
+    last_week_users_total = sum(two_week_users)
+
+    if last_week_users_total > 0:
+        user_change = round(
+            ((this_week_users_total - last_week_users_total) / last_week_users_total) * 100,
+            1
+        )
+    else:
+        user_change = 0
+
     return render_template(
         'admin.html',
         date=datetime.datetime.now().strftime("%B %d, %Y"),
@@ -164,12 +195,15 @@ def dashboard():
         new_users=new_users,
         visits_today=visits_today,
         productivity_change=productivity_change,
+        user_change=user_change,
         visits=recent_visits,
         waitlist=waitlist_this_week,
         chart_week=chart_week,
         page_visits=page_visits,
         week_visits=week_visits,
         two_week_visits=two_week_visits,
+        week_users=week_users,
+        two_week_users=two_week_users,
         users=User.query.all(),
         tasks=Task.query.all()
     )
