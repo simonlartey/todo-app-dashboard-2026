@@ -98,10 +98,64 @@ def dashboard():
         Visit.timestamp.desc()
     ).limit(15).all()
 
-    # ===== charts  =====
-    chart_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    week_notes = [0] * 7
-    two_week_notes = [0] * 7
+    # ===== Weekly Index Visit Comparison =====
+
+    week_visits = []
+    two_week_visits = []
+    chart_week = []
+
+    for i in range(6, -1, -1):
+        day_this_week = today - datetime.timedelta(days=i)
+        day_last_week = day_this_week - datetime.timedelta(days=7)
+
+        chart_week.append(day_this_week.strftime("%a"))
+
+        this_week_count = Visit.query.filter(
+            Visit.page == "index",
+            db.func.date(Visit.timestamp) == day_this_week
+        ).count()
+
+        last_week_count = Visit.query.filter(
+            Visit.page == "index",
+            db.func.date(Visit.timestamp) == day_last_week
+        ).count()
+
+        week_visits.append(this_week_count)
+        two_week_visits.append(last_week_count)
+
+    # ===== Bar Chart: Visits Today Per Page =====
+
+    pages = [
+        "index",
+        "login-g",
+        "callback",
+        "user-name",
+        "license",
+        "waitlist",
+        "state-not-found",
+        "State-mismatch"
+    ]
+
+    page_visits = []
+
+    for page in pages:
+        count = Visit.query.filter(
+            Visit.page == page,
+            db.func.date(Visit.timestamp) == today
+        ).count()
+
+        page_visits.append(count)
+
+    this_week_total = sum(week_visits)
+    last_week_total = sum(two_week_visits)
+
+    if last_week_total > 0:
+        productivity_change = round(
+            ((this_week_total - last_week_total) / last_week_total) * 100,
+            1
+        )
+    else:
+        productivity_change = 0
 
     return render_template(
         'admin.html',
@@ -109,15 +163,13 @@ def dashboard():
         total_users=total_users,
         new_users=new_users,
         visits_today=visits_today,
-        productivity_change=0,
+        productivity_change=productivity_change,
         visits=recent_visits,
         waitlist=waitlist_this_week,
         chart_week=chart_week,
-        week_notes=week_notes,
-        two_week_notes=two_week_notes,
-        page_visits=[0]*8,
-        week_visits=[0]*7,
-        two_week_visits=[0]*7,
+        page_visits=page_visits,
+        week_visits=week_visits,
+        two_week_visits=two_week_visits,
         users=User.query.all(),
         tasks=Task.query.all()
     )
