@@ -593,7 +593,7 @@
     new Chart(ctx1, {
       type: "bar",
       data: {
-        labels: ["index", "login-g", "callback", "user-name", "license", "waitlist", "state-not-found", "State-mismatch"],
+        labels: {{ pages | safe }},
         datasets: [{
           label: "visits",
           tension: 0.2,

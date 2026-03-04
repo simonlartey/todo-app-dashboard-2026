@@ -27,11 +27,6 @@ def log_visit(page, user_id):
 def index():
     log_visit(page='index', user_id=current_user.id if current_user.is_authenticated else None)
 
-    # print all visits
-    visits = Visit.query.all()
-    for visit in visits:
-        print(f"Visit: {visit.page}, User ID: {visit.user}, Timestamp: {visit.timestamp}")
-
     return render_template('index.html')
 
 @main_blueprint.route('/invitation', methods=['GET', 'POST'])
@@ -129,13 +124,13 @@ def dashboard():
 
     pages = [
         "index",
-        "login-g",
-        "callback",
-        "user-name",
-        "license",
-        "waitlist",
-        "state-not-found",
-        "State-mismatch"
+        "todo",
+        "invitation",
+        "create_task",
+        "toggle_task",
+        "delete_task",
+        "waitlist_signup",
+        "login_error"
     ]
 
     page_visits = []
@@ -205,6 +200,7 @@ def dashboard():
         page_visits=page_visits,
         week_visits=week_visits,
         two_week_visits=two_week_visits,
+        pages=pages,
         week_users=week_users,
         two_week_users=two_week_users,
         users=User.query.all(),
