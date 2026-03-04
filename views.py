@@ -136,6 +136,8 @@ def dashboard():
 
     pages = [
         "index",
+        "login",
+        "signup",
         "todo",
         "invitation",
         "create_task",
