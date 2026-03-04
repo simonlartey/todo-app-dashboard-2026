@@ -90,6 +90,8 @@ def dashboard():
         db.func.date(Visit.timestamp) == today
     ).count()
 
+    total_visits = Visit.query.count()
+
     waitlist_this_week = Waitlist.query.filter(
         Waitlist.timestamp >= week_ago
     ).all()
@@ -194,9 +196,10 @@ def dashboard():
         total_users=total_users,
         new_users=new_users,
         visits_today=visits_today,
+        total_visits=total_visits,
         productivity_change=productivity_change,
         user_change=user_change,
-        visits=recent_visits,
+        recent_visits=recent_visits,
         waitlist=waitlist_this_week,
         chart_week=chart_week,
         page_visits=page_visits,

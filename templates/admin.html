@@ -345,7 +345,7 @@
                 <!-- <canvas id="chart-line2" class="chart-canvas" height="300"></canvas> -->
               <div class="row">
                 <div class="col-6">  
-                  <span>Database has {{ visits|length }} visits</span>
+                  <span>Database has {{ total_visits }} visits</span>
                   <br>
                   <span>Database has {{ users|length }} Users</span>
                   <br>
@@ -356,8 +356,8 @@
                   <br><br>
                   <h6 class="text-capitalize">Recent visits</h6>
                   <p class="text-sm mb-0">
-                    {% for visit in visits[0:11] %}
-                    <span>{{ visit.date }} : {{ visit.page }}</span>
+                    {% for visit in recent_visits[0:11] %}
+                    <span>{{ visit.timestamp }} : {{ visit.page }}</span>
                     <br>
                     {% endfor %}
                   </p>
@@ -366,10 +366,10 @@
                   <h6 class="text-capitalize">Recent Errors</h6>
                   <p class="text-sm mb-0 text-danger">
                     
-                    {% for visit in visits %}
-                      {% if visit.page == "state-not-found" or visit.page == "State-mismatch" %}
-                        <span>{{ visit.date }} : {{ visit.page }}</span>
-                        <br>
+                    {% for visit in recent_visits %}
+                        {% if visit.page in ["state-not-found", "State-mismatch", "login_error"] %}
+                          <span>{{ visit.timestamp }} : {{ visit.page }}</span>
+                          <br>
                       {% endif %}
                     {% endfor %}
                   </p>
@@ -379,9 +379,9 @@
                   <br>
                   <h6 class="text-capitalize">Try visits</h6>
                   <p class="text-sm mb-0">
-                    {% for visit in visits %}
+                    {% for visit in recent_visits %}
                       {% if visit.page == "try" %}
-                      <span>{{ visit.date }} : {{ visit.page }}</span>
+                      <span>{{ visit.timestamp }} : {{ visit.page }}</span>
                       <br>
                       {% endif %}
                     {% endfor %}
@@ -435,14 +435,21 @@
                 {% for user in users: %}
                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <div class="d-flex flex-column">
-                    <h6 class="mb-3 text-sm">{{ user.name }}</h6>
-                    <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold"> {{ user.email }}</span></span>
-                    <span class="text-xs">Joined on: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.date_created }}</span></span>
-                    <span class="text-xs">Total tasks: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.notes|length }}</span></span>
+                    <h6 class="mb-3 text-sm">{{ user.email }}</h6>
+                    <span class="text-xs">Joined on:
+                      <span class="text-dark ms-sm-2 font-weight-bold">
+                        {{ user.created_at }}
+                      </span>
+                    </span>
+                    <span class="text-xs">Total tasks:
+                      <span class="text-dark ms-sm-2 font-weight-bold">
+                        {{ user.tasks|length }}
+                      </span>
+                    </span>
                   </div>
                   <div class="ms-auto text-end">
                     {% if user.id != 1 %}
-                    <a class="btn btn-link text-danger text-gradient px-3 mb-0"  onclick="deleteUser('{{ user.name }}' , {{ user.id }})"><i class="far fa-trash-alt me-2"></i>Delete</a>
+                    <a class="btn btn-link text-danger text-gradient px-3 mb-0"  onclick="deleteUser('{{ user.email }}' , {{ user.id }})"><i class="far fa-trash-alt me-2"></i>Delete</a>
                     <!-- <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="/delete_user/{{ user.id }}"><i class="far fa-trash-alt me-2"></i>Delete</a> -->
                     <!-- <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a> -->
                     {% endif %}
@@ -465,8 +472,11 @@
                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <div class="d-flex flex-column">
                     <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold"> {{ user.email }}</span></span>
-                    <span class="text-xs">Joined on: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.date }}</span></span>
-                    <span class="text-xs">IP-address: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.ip_address }}</span></span>
+                    <span class="text-xs">Joined on:
+                      <span class="text-dark ms-sm-2 font-weight-bold">
+                        {{ user.timestamp }}
+                      </span>
+                    </span>
                   </div>
                   <div class="ms-auto text-end">
                     

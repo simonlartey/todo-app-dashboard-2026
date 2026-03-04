@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request
 from models import db, User
 from flask_login import login_user, logout_user, login_required
+from views import log_visit
 
 # Create a blueprint
 auth_blueprint = Blueprint('auth', __name__)
@@ -40,9 +41,20 @@ def login():
         password = request.form['password']
         
         user = User.query.filter_by(email=email).first()
-        if user and user.check_password(password):
-            login_user(user)
-            return redirect(url_for('main.todo'))
+
+        # User does not exist
+        if not user:
+            log_visit(page="login_error", user_id=None)
+            return redirect(url_for('auth.login'))
+
+        # Wrong password
+        if not user.check_password(password):
+            log_visit(page="login_error", user_id=user.id)
+            return redirect(url_for('auth.login'))
+
+        # Successful login
+        login_user(user)
+        return redirect(url_for('main.todo'))
         
     return render_template('login.html')
 
