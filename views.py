@@ -4,10 +4,8 @@ from flask import request
 from flask_login import login_required, current_user
 from models import db, Task, User, Visit, Waitlist
 from sqlalchemy.exc import IntegrityError
-# import datetime
 import datetime
 
-# Create a blueprint
 main_blueprint = Blueprint('main', __name__)
 
 
@@ -16,12 +14,6 @@ def log_visit(page, user_id):
     visit = Visit(page=page, user=user_id)
     db.session.add(visit)
     db.session.commit()
-
-
-###############################################################################
-# Routes
-###############################################################################
-
 
 @main_blueprint.route('/', methods=['GET'])
 def index():

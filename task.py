@@ -1,6 +1,6 @@
 
 class Task:
-    _id_counter = 1  # class variable to assign unique IDs
+    _id_counter = 1
 
     def __init__(self, title, done=False):
         self.id = Task._id_counter

@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     )
 
     tasks = db.relationship('Task', backref='user')
-    visits = db.relationship('Visit')  # added visits to user
+    visits = db.relationship('Visit')
 
     def set_password(self, password):
         """Hash the password and store it."""
@@ -55,7 +55,7 @@ class Visit(db.Model):
     user = db.Column(
         db.Integer,
         db.ForeignKey('user.id'),
-        nullable=True  # nullable so that we can log visits without a user
+        nullable=True
     )
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
 

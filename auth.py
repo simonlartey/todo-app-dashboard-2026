@@ -25,7 +25,6 @@ def signup():
         new_user = User(email=email)
         new_user.set_password(password)
 
-        # Add and commit the user to the database
         db.session.add(new_user)
         db.session.commit()
 
@@ -44,12 +43,10 @@ def login():
         
         user = User.query.filter_by(email=email).first()
 
-        # User does not exist
         if not user:
             log_visit(page="login_error", user_id=None)
             return redirect(url_for('auth.login'))
 
-        # Wrong password
         if not user.check_password(password):
             log_visit(page="login_error", user_id=user.id)
             return redirect(url_for('auth.login'))

@@ -1,4 +1,3 @@
-// toggle task completion status
 function toggleTaskStatus(taskId) {
   console.log(`Toggling status for task with ID: ${taskId}`);
   fetch(`/api/v1/tasks/${taskId}`, { method: 'PATCH' })
@@ -10,7 +9,6 @@ function toggleTaskStatus(taskId) {
     });
 }
 
-// add item to todo list
 function addTaskToList(task) {
   const taskList = document.getElementById('task-list');
   const li = document.createElement('li');
@@ -19,7 +17,6 @@ function addTaskToList(task) {
   taskList.appendChild(li);
 }
 
-// submit new task to API
 const taskForm = document.getElementById('task-form');
 taskForm.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -38,13 +35,12 @@ taskForm.addEventListener('submit', (event) => {
       .then(response => response.json())
       .then(data => {
         console.log('Task added:', data);
-        taskInput.value = ''; // Clear the input
-        addTaskToList(data.task); // Add the new task to the list
+        taskInput.value = '';
+        addTaskToList(data.task);
       });
   }
 });
 
-// Fetch and display tasks
 function loadTasks() {
   fetch('/api/v1/tasks')
     .then(response => response.json())
@@ -55,7 +51,6 @@ function loadTasks() {
     });
 }
 
-// remove task function
 function removeTask(taskId) {
   console.log(`Removing task with ID: ${taskId}`);
   fetch(`/remove/${taskId}`, { method: 'GET' })
@@ -66,6 +61,4 @@ function removeTask(taskId) {
     });
 }
 
-
-// main function calls
 loadTasks();
